@@ -1,6 +1,6 @@
-# Title in progress
+# Recipe App
 
-There will be a title
+Platform where users can share and discover cooking recipes. Include features for recipe categorization, user profiles, and comments.
 
 ## Stack
 
