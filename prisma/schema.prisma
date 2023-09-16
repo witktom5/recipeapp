@@ -70,9 +70,11 @@ enum Unit {
 }
 
 enum IngredientType {
-  Meat
-  Vegetable
-  Fruit
+  meat
+  vegetable
+  fruit
+  spice
+  other
 }
 
 model Ingredient {
@@ -80,11 +82,10 @@ model Ingredient {
   createdAt        DateTime           @default(now()) @map("created_at")
   updatedAt        DateTime           @updatedAt @map("updated_at")
   name             String             @db.VarChar(50)
+  unit             Unit
   ingredientType   IngredientType     @map("ingredient_type")
-  ingredientTypeId String             @map("ingredient_type_id")
   recipeIngredient RecipeIngredient[]
 
-  @@index([ingredientTypeId])
   @@map("ingredients")
 }
 
