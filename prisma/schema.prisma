@@ -8,7 +8,6 @@ datasource db {
   relationMode = "prisma"
 }
 
-// Necessary for Next auth
 model Account {
   id                String  @id @default(cuid())
   userId            String  @map("user_id")
@@ -49,6 +48,7 @@ model User {
   accounts      Account[]
   sessions      Session[]
   recipes       Recipe[]
+  votes         Vote[]
 
   @@map("users")
 }
@@ -78,24 +78,24 @@ enum IngredientType {
 }
 
 model Ingredient {
-  id               String             @id @default(cuid())
-  createdAt        DateTime           @default(now()) @map("created_at")
-  updatedAt        DateTime           @updatedAt @map("updated_at")
-  name             String             @db.VarChar(50)
-  unit             Unit
-  ingredientType   IngredientType     @map("ingredient_type")
-  recipeIngredient RecipeIngredient[]
+  id                 String             @id @default(cuid())
+  createdAt          DateTime           @default(now()) @map("created_at")
+  updatedAt          DateTime           @updatedAt @map("updated_at")
+  name               String             @db.VarChar(50)
+  unit               Unit
+  ingredientType     IngredientType     @map("ingredient_type")
+  recipe_ingredients RecipeIngredient[]
 
   @@map("ingredients")
 }
 
 model RecipeIngredient {
   id           String     @id @default(cuid())
-  ingredient   Ingredient @relation(fields: [ingredientId], references: [id])
   quantity     Int
   ingredientId String     @map("ingredient_id")
-  recipe       Recipe?    @relation(fields: [recipeId], references: [id])
   recipeId     String?    @map("recipe_id")
+  ingredient   Ingredient @relation(fields: [ingredientId], references: [id])
+  recipe       Recipe?    @relation(fields: [recipeId], references: [id])
 
   @@index([ingredientId])
   @@index([recipeId])
@@ -108,9 +108,29 @@ model Recipe {
   updatedAt   DateTime           @updatedAt @map("updated_at")
   title       String             @db.VarChar(75)
   ingredients RecipeIngredient[]
-  User        User?              @relation(fields: [userId], references: [id])
-  userId      String?
+  userId      String?            @map("user_id")
+  user        User?              @relation(fields: [userId], references: [id], onDelete: Cascade)
+  votes       Vote[]
 
   @@index([userId])
   @@map("recipes")
+}
+
+enum VoteValue {
+  UP
+  DOWN
+}
+
+model Vote {
+  id        String    @id @default(cuid())
+  createdAt DateTime  @default(now()) @map("created_at")
+  updatedAt DateTime  @updatedAt @map("updated_at")
+  value     VoteValue
+  userId    String?   @map("user_id")
+  recipeId  String?   @map("recipe_id")
+  user      User?     @relation(fields: [userId], references: [id])
+  Recipe    Recipe?   @relation(fields: [recipeId], references: [id])
+
+  @@index([userId])
+  @@index([recipeId])
 }
