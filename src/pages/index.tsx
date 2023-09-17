@@ -10,7 +10,7 @@ export default function Home() {
         <title>Recipe App</title>
         <meta
           name="description"
-          content="App for looking up new cooking recipes"
+          content="App to help you find new cooking recipes"
         />
         <link rel="icon" href="/favicon.ico" />
       </Head>
